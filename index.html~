@@ -1,0 +1,18 @@
+<html>
+
+<head>
+  <title>Audio test</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="jquery.min.js"></script>
+  <script src="main.js"></script>
+  <style> 
+    canvas#maincanvas{cursor:none; position: absolute; }
+    body, html,canvas { margin: 0; padding: 0; }
+  </style>
+</head>
+
+<body onload="init();">
+  
+</body>
+
+</html>
