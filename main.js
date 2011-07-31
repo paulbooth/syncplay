@@ -2,19 +2,22 @@
  * This is the audio element for the page. We use this to play audio.
  */
 var audio;
-
+var socket;
+var startTime;
+var offset;
 function init() {
     initSocket();
     initAudioElement();
 }
 
 function initSocket() {
-    var socket = new io.Socket(window.location.hostname, {port: 8080});
+    socket = new io.Socket(window.location.hostname, {port: 8080});
 
     socket.connect();
 
     socket.on('connect', function(evt) {
 		  console.log(evt);
+          syncClocks();
 	      });
     socket.on('message', function(evt) {
 		  if ('src' in evt) {
@@ -28,7 +31,14 @@ function initSocket() {
 			  {'latencyTest':
 			       new Date().getTime() - evt.latencyTest
 			   });
-		  }
+		  } else if ('serverTime' in evt) {
+            if (startTime == null) {
+                throw "clock sync not run correctly upon server connection, please try again?"
+            }
+            var serverTime = evt.serverTime;
+            var oneWayTime = ((new Date()).getTime() - startTime)/2;
+            offset = serverTime - (oneWayTime + startTime)
+          }
 	      });
     socket.on('disconnect', function() {
 		  console.log('client disconnect');
@@ -41,4 +51,8 @@ function initAudioElement() {
 
 function play() {
     audio.play();
+}
+
+function syncClocks(){
+    startTime = (new Date()).getTime();
 }
