@@ -11,9 +11,9 @@ var countDownTimeout;
 var clients = [];
 var server = http.createServer(function(req, res) {
     paperboy.deliver(path.dirname(__filename), req, res);
-    });
+    });q
 
-server.listen(8080, '192.168.2.4');
+server.listen(8080, '192.168.2.8');
 
 var socket = io.listen(server);
 socket.on('connection', function(client) {
@@ -29,6 +29,7 @@ socket.on('connection', function(client) {
 			    }
 			});
 	  });
+
 function start() {
     var date = new Date();
     var curtime = date.getTime();
@@ -48,3 +49,4 @@ function startCountDown() {
 	start();
     }
 }
+ 
