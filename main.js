@@ -1,58 +1,56 @@
-/*
- * This is the audio element for the page. We use this to play audio.
- */
-var audio;
-var socket;
-var startTime;
-var offset;
-function init() {
-    initSocket();
-    initAudioElement();
+// Utilities
+
+function now() {
+  return (new Date()).getTime();
 }
 
-function initSocket() {
-    socket = new io.Socket(window.location.hostname, {port: 8080});
-
-    socket.connect();
-
-    socket.on('connect', function(evt) {
-		  console.log(evt);
-          syncClocks();
-	      });
-    socket.on('message', function(evt) {
-		  if ('src' in evt) {
-		      audio.setAttribute('src', evt.src);
-		  } else if ('play' in evt) {
-		      setTimeout(play, evt.play);
-		  } else if ('latencyTest' in evt) {
-		      console.log('latencyTest');
-		      console.log(evt.latencyTest);
-		      socket.send(
-			  {'latencyTest':
-			       new Date().getTime() - evt.latencyTest
-			   });
-		  } else if ('serverTime' in evt) {
-            if (startTime == null) {
-                throw "clock sync not run correctly upon server connection, please try again?"
-            }
-            var serverTime = evt.serverTime;
-            var oneWayTime = ((new Date()).getTime() - startTime)/2;
-            offset = serverTime - (oneWayTime + startTime)
-          }
-	      });
-    socket.on('disconnect', function() {
-		  console.log('client disconnect');
-	      });
+function at(datetime) {
+  return datetime - now();
 }
 
-function initAudioElement() {
-    audio = document.createElement('audio');
-}
+// Init
 
-function play() {
-    audio.play();
-}
+$(function() {
+  console.log('starting init...');
+  var audioElement, socket, startTime, offset;
 
-function syncClocks(){
-    startTime = (new Date()).getTime();
-}
+  audioElement = document.createElement('audio');
+
+  console.log(1);
+  socket = new io.connect('http://' + window.location.hostname + ':8080');
+  console.log(window.location.hostname);
+
+  socket.on('connect', function(data) {
+	console.log('connected; starting clock sync');
+    startTime = now();
+    socket.send({'startClockSync': true});
+  });
+
+  socket.on('message', function(data) {
+    if ('src' in data) {
+	  console.log('audio src received');
+      audioElement.setAttribute('src', data.src);
+    } else if ('play' in data) {
+	  console.log('received play message');
+      setTimeout(function() { audioElement.play(); },
+				 at(data.play + offset));
+    } else if ('clockSyncServerTime' in data) {
+	  console.log('server clock sync received; setting offset');
+      if (startTime == null) {
+        throw "clock sync failed: startTime didn't get set.";
+      }
+      var serverTime = data.clockSyncServerTime,
+          oneWayTime = (now() - startTime)/2;
+      offset = serverTime - (oneWayTime + startTime);
+    }
+  });
+
+  socket.on('disconnect', function() {
+    console.log('client disconnect');
+  });
+  
+  $('#play').click(function() {
+    console.log('sending play message');
+	socket.send({'start': true});
+  });
+});
