@@ -1,5 +1,5 @@
 var http = require('http'),
-io = require('socket.io'),
+//io = require('socket.io'),
 path = require('path'),
 paperboy = require('paperboy');
 
@@ -58,7 +58,10 @@ var getNetworkIP = (function () {
 })();
 
 getNetworkIP(function (error, ip) {
-  console.log(ip);
+  if (ip == null) {
+      ip = 'localhost';
+  }
+  console.log(ip + ':8080');
   if (error) {
     console.log('error:', error);
   } else {
@@ -76,15 +79,17 @@ function runServer(ip) {
 
   server.listen(8080);
 
-  var socket = io.listen(server);
-  socket.on('connection', function(client) {
+  var io = require('socket.io').listen(server);
+  io.sockets.on('connection', function(client) {
     console.log('client connect.');
-    client.send({'src': audioSrc});
+    client.json.send({'src': audioSrc});
     clients.push(client);
     client.on('message', function(data) {
+	    
+	    console.log(data);
       if ('startClockSync' in data) {
 	console.log('syncing clock');
-	client.send({'clockSyncServerTime': (new Date()).getTime()});
+	client.json.send({'clockSyncServerTime': (new Date()).getTime()});
       } else if ('start' in data) {
 	console.log('playing music');
 	start();
@@ -98,7 +103,7 @@ function runServer(ip) {
 
   function start() {
     clients.forEach(function(client) {
-      client.send({'play': (new Date()).getTime() + seconds(5)});
+      client.json.send({'play': (new Date()).getTime() + seconds(5)});
     });
   }
   console.log('awesome. it\'s up.');
