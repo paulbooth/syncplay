@@ -1,5 +1,5 @@
 var http = require('http'),
-//io = require('socket.io'),
+io,
 path = require('path'),
 paperboy = require('paperboy');
 
@@ -79,7 +79,7 @@ function runServer(ip) {
 
   server.listen(8080);
 
-  var io = require('socket.io').listen(server);
+  io = require('socket.io').listen(server);
   io.sockets.on('connection', function(client) {
     console.log('client connect.');
     client.json.send({'src': audioSrc});
@@ -95,8 +95,15 @@ function runServer(ip) {
 	start();
       }
     });
+    client.on('stopall', function(data) {
+	    console.log('stop all clients');
+	    client.broadcast.emit('stop');
+	});
   });
-
+  io.sockets.on('stopall', function(client) {
+	  console.log('stop all sockets');
+	  client.broadcast.emit('stop');
+      });
   function seconds(n) {
     return n * 1000;
   }

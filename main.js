@@ -1,5 +1,5 @@
 // Utilities
-var DEBUG = false;
+var DEBUG = true;
 function print(entry) {
     return log(entry);
 }
@@ -24,7 +24,6 @@ $(function() {
 
   audioElement = document.createElement('audio');
 
-  log(1);
   socket = io.connect();//'http://' + window.location.hostname + ':8080');
   log(window.location.hostname);
 
@@ -36,8 +35,9 @@ $(function() {
 
   socket.on('message', function(data) {
     if ('src' in data) {
-	  log('audio src received');
+	  log('audio src received:' + data.src);
       audioElement.setAttribute('src', data.src);
+      audioElement.load();
     } else if ('play' in data) {
 	  log('received play message');
       setTimeout(function() { audioElement.play(); },
@@ -47,12 +47,14 @@ $(function() {
       if (startTime == null) {
         throw "clock sync failed: startTime didn't get set.";
       }
-      var serverTime = data.clockSyncServerTime,
-          oneWayTime = (now() - startTime)/2;
-      offset = serverTime - (oneWayTime + startTime);
+      offset = data.clockSyncServerTime - now()/2 + startTime/2;
     }
   });
-
+  socket.on('stop', function(data) {
+	  log('stopping');
+	  	audioElement.stop();
+	window.location.href = window.location.href;
+      });
   socket.on('disconnect', function() {
     log('client disconnect');
   });
@@ -61,4 +63,8 @@ $(function() {
     log('sending play message');
 	socket.json.send({'start': true});
   });
+  $('#stop').click(function() {
+	  log('sending stop message');
+	  socket.emit('stopall');
+      });
 });
