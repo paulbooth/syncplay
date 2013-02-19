@@ -3,10 +3,13 @@ extends layout
 block head
   script(src='/socket.io/socket.io.js')
   script(src='main.js')
+  link(rel='stylesheet', href='stylesheets/room.css')
 
 block content
-  h1 Welcome to the test.
-  p DO NOT TOUCH THE GLASS.
-  button#play Play
-  button#stop Pause
-  div#info
+  div.center#content
+    h1 Welcome to the test.
+    p DO NOT TOUCH THE GLASS.
+    button#play.btn.btn-primary Play
+    button#stop.btn.btn-warning.disabled Pause
+    a#refresh.btn(href='') Refresh
+    div#info

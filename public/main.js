@@ -9,7 +9,6 @@ $(function() {
 
   socket.on('connect', function(data) {
 	  console.log('connected; starting clock sync');
-    setInterval(startSync, 1000);
   });
 
   function startSync() {
@@ -21,6 +20,7 @@ $(function() {
     console.log('audio src received:' + audioSrc);
     songAudio.setAttribute('src', audioSrc);
     songAudio.load();
+    setInterval(startSync, 1000);
   });
 
   socket.on('clockSyncServerTime', function(clockSyncServerTime) {
@@ -35,6 +35,9 @@ $(function() {
     numberSyncs++;
     console.log('offset: ' + offset);
     $('#info').text( 'offset: ' + offset + ' old: ' + (newOffset - oldOffset) + ' cumulative: ' + (offset - oldOffset));
+    var max_badness = 3;
+    var redness = Math.floor(Math.min(Math.abs(offset - oldOffset), max_badness)/max_badness * 255);
+    $('body').css('background-color', 'rgb(' + redness + ',' + (255-redness)  + ',0)');
   });
 
   socket.on('play', function(playTime) {
@@ -47,9 +50,10 @@ $(function() {
   //   // not used.
   // });
 
-  socket.on('stop', function() {
+  socket.on('stop', function(stopTime) {
 	  console.log('stopping');
-	  songAudio.pause();
+	  setTimeout(function() { songAudio.pause(); },
+      (stopTime + offset));
 	  // window.location.href = window.location.href;
   });
 

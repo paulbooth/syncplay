@@ -28,7 +28,7 @@ function connection_function(socket) {
 
   socket.on('start', function() {
     console.log('playing music');
-    io.of(socket.namespace.name).emit('play', Date.now() + 5000);
+    io.of(socket.namespace.name).emit('play', Date.now() + 2000);
   })
 
   socket.on('message', function(data) {
@@ -37,7 +37,7 @@ function connection_function(socket) {
 
   socket.on('stopall', function(client) {
     console.log('stop all sockets');
-    io.of(socket.namespace.name).emit('stop');
+    io.of(socket.namespace.name).emit('stop', Date.now() + 2000);
   });
 
   socket.on('disconnect', function () {
