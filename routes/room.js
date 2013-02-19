@@ -63,4 +63,5 @@ exports.room = function(req, res) {
 
 exports.setServer = function(server) {
   io = require('socket.io').listen(server);
+  console.log('io set.');
 }
