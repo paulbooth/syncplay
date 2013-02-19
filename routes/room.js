@@ -32,11 +32,16 @@ function connection_function(socket) {
   })
 
   socket.on('message', function(data) {
+    // should not be used.
+  });
 
+  socket.on('stopall', function(client) {
+    console.log('stop all sockets');
+    io.of(socket.namespace.name).emit('stop');
   });
 
   socket.on('disconnect', function () {
-    console.log("Disconnected. from " + socket.namespace)
+    console.log("Disconnected. from " + socket.namespace.name);
   });
 }
 
