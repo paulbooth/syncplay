@@ -1,0 +1,18 @@
+function getRandomTrochee() {
+    var trochees = ["mighty", "morphing", "zombie", "fighter", "epic", "bacon", "burger", "blaster", "teenage", "mutant", "ninja", "turtle", "killer", "laser", "raptor", "jesus", "deadly", "viper", "pirate", "monkey", "hobo", "kitty", "robot", "lady", "power", "ranger", "batman", "chocolate", "rain", "puppy", "dino", "wombat", "gator", "poison", "rocker", "skater", "hater", "techno", "viking", "slasher", "winning", "tiger", "magic", "crystal", "vortex", "tower", "mega", "super", "ultra", "giant", "titan", "satyr", "smasher", "ancient", "elvin", "armor", "legend", "hammer", "castle", "iron", "maiden", "diesel", "motor", "gameboy", "console", "muscle", "flexing", "fairy", "woman", "toxic", "baby", "only", "japan", "captain", "falcon", "missile", "raider", "eagle", "satan", "lion", "demon", "madness", "sparta", "awesome", "jungle", "dolphin", "hamster", "venom", "studded", "bracelet", "trojan", "radar", "rocket", "master", "twisted", "metal", "jacket", "double", "rainbow", "heavy", "dragon", "lava", "dungeon", "level", "seven", "night-elf", "druid", "dark-lord", "vader", "frodo", "bilbo", "gandalf", "mordor", "mealtime", "drunken", "pancakes", "butter", "batter", "numa", "comic", "questing", "hero", "carebear", "stewart", "david", "badger", "mushroon", "nazi", "youtube", "myspace", "facebook", "blogger", "google", "yahoo", "ebay", "twitter", "wiki", "tumblr", "reddit", "flickr", "online", "gamer", "leeroy", "jenkens", "doctor", "narwhal", "penguin", "christmas"];
+    var trochee = trochees[Math.floor(Math.random()*trochees.length)];
+    return trochee.charAt(0).toUpperCase() + trochee.slice(1);
+}
+
+
+exports.getRandomTrochee = getRandomTrochee;
+exports.getRandomTrocheeString = function(n) {
+  if (n === undefined) {
+    n = 1;
+  }
+  var s = '';
+  for (var i = 0; i < n; i++) {
+    s += getRandomTrochee();
+  }
+  return s;
+}

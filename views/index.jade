@@ -1,0 +1,11 @@
+extends layout
+
+block head
+  script(src='/socket.io/socket.io.js')
+  script(src='main.js')
+
+block content
+  h1 Welcome to the test.
+  p DO NOT TOUCH THE GLASS.
+  button#play Play
+  button#stop Stop
