@@ -30,11 +30,16 @@ app.configure(function(){
 });
 
 app.configure('development', function(){
+  try {
+    networkIP.printIP(app.get('port'));
+  } catch (e) {
+    console.error("couldn't get IP. oh well.");
+    console.log(e);
+  }
   app.use(express.errorHandler());
 });
   
 server.listen(app.get('port'), function(){
-  networkIP.printIP(app.get('port'));
   console.log("Express server listening.");
 });
 
