@@ -1,6 +1,6 @@
 $(function() {
   console.log('starting init...');
-  var songAudio, socket, startTime, offset = 0, numberSyncs = 0;
+  var songAudio, socket, startTime, offset, numberSyncs = 0;
 
   songAudio = new Audio();
 
@@ -32,8 +32,11 @@ $(function() {
     }
     var newOffset = clockSyncServerTime - Date.now()/2 - startTime/2;
     var oldOffset = offset;
-    
-    offset = (offset * numberSyncs + newOffset)/(numberSyncs + 1);
+    if (offset == undefined) {
+      offset = newOffset
+    } else {
+      offset = (offset + newOffset)/(2);
+    }
     numberSyncs++;
     console.log('offset: ' + offset);
     $('#info').text( 'offset: ' + offset + ' old: ' + (newOffset - oldOffset) + ' cumulative: ' + (offset - oldOffset));
