@@ -30,6 +30,7 @@ app.configure(function(){
 });
 
 app.configure('development', function(){
+  console.log('development...');
   try {
     networkIP.printIP(app.get('port'));
   } catch (e) {
