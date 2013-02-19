@@ -14,22 +14,22 @@ exports.index = function(req, res){
 var rooms = {};
 var io;
 
-var audioSrc = 'audio/test.mp3';
+var audioSrc = 'audio/boo.mp3';
 
 // The function for a socket connecting to a room
 function connection_function(socket) {
   console.log("connected to  " + socket.namespace.name);
   socket.json.send({'src': audioSrc});
-  
+
   socket.on('message', function(data) {
       
                 console.log(data);
                 if ('startClockSync' in data) {
             console.log('syncing clock');
-            socket.json.send({'clockSyncServerTime': (new Date()).getTime()});
+            socket.json.send({'clockSyncServerTime': Date.now()});
                 } else if ('start' in data) {
             console.log('playing music');
-            io.of(socket.namespace.name).json.send({'play': (new Date()).getTime() + 5000});
+            io.of(socket.namespace.name).json.send({'play': Date.now() + 5000});
                 }
     });
   socket.on('disconnect', function () {
