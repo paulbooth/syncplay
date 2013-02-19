@@ -31,25 +31,31 @@ $(function() {
   socket.on('connect', function(data) {
 	log('connected; starting clock sync');
     startTime = now();
-    socket.json.send({'startClockSync': true});
+    socket.emit('startClockSync');
+  });
+
+  socket.on('src', function(audioSrc) {
+    log('audio src received:' + audioSrc);
+    audioElement.setAttribute('src', audioSrc);
+    audioElement.load();
+  });
+
+  socket.on('clockSyncServerTime', function(clockSyncServerTime) {
+    log('server clock sync received; setting offset');
+    if (startTime == null) {
+      throw "clock sync failed: startTime didn't get set.";
+    }
+    offset = clockSyncServerTime - now()/2 + startTime/2;
+  });
+
+  socket.on('play', function(playTime) {
+    log('received play message');
+    setTimeout(function() { audioElement.play(); },
+      at(playTime + offset));
   });
 
   socket.on('message', function(data) {
-    if ('src' in data) {
-	  log('audio src received:' + data.src);
-      audioElement.setAttribute('src', data.src);
-      audioElement.load();
-    } else if ('play' in data) {
-	  log('received play message');
-      setTimeout(function() { audioElement.play(); },
-				 at(data.play + offset));
-    } else if ('clockSyncServerTime' in data) {
-	  log('server clock sync received; setting offset');
-      if (startTime == null) {
-        throw "clock sync failed: startTime didn't get set.";
-      }
-      offset = data.clockSyncServerTime - now()/2 + startTime/2;
-    }
+    
   });
   socket.on('stop', function(data) {
 	  log('stopping');
@@ -62,7 +68,7 @@ $(function() {
   
   $('#play').click(function() {
     log('sending play message');
-	socket.json.send({'start': true});
+	  socket.emit('start');
   });
   $('#stop').click(function() {
 	  log('sending stop message');

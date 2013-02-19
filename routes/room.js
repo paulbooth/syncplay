@@ -19,19 +19,22 @@ var audioSrc = 'audio/boo.mp3';
 // The function for a socket connecting to a room
 function connection_function(socket) {
   console.log("connected to  " + socket.namespace.name);
-  socket.json.send({'src': audioSrc});
+  socket.emit('src', audioSrc);
+
+  socket.on('startClockSync', function(data) {
+    console.log('syncing clock');
+    socket.emit('clockSyncServerTime', Date.now());
+  });
+
+  socket.on('start', function() {
+    console.log('playing music');
+    io.of(socket.namespace.name).emit('play', Date.now() + 5000);
+  })
 
   socket.on('message', function(data) {
-      
-                console.log(data);
-                if ('startClockSync' in data) {
-            console.log('syncing clock');
-            socket.json.send({'clockSyncServerTime': Date.now()});
-                } else if ('start' in data) {
-            console.log('playing music');
-            io.of(socket.namespace.name).json.send({'play': Date.now() + 5000});
-                }
-    });
+
+  });
+
   socket.on('disconnect', function () {
     console.log("Disconnected. from " + socket.namespace)
   });
