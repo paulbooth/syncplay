@@ -63,5 +63,9 @@ exports.room = function(req, res) {
 
 exports.setServer = function(server) {
   io = require('socket.io').listen(server);
+  io.configure(function () { 
+    io.set("transports", ["xhr-polling"]); 
+    io.set("polling duration", 10); 
+  });
   console.log('io set.');
 }
