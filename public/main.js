@@ -20,7 +20,9 @@ $(function() {
     console.log('audio src received:' + audioSrc);
     songAudio.setAttribute('src', audioSrc);
     songAudio.load();
-    setInterval(startSync, 1000);
+    setTimeout(function() {
+      setInterval(startSync, 1000);
+    }, 1000);    
   });
 
   socket.on('clockSyncServerTime', function(clockSyncServerTime) {
