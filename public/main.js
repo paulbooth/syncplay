@@ -35,7 +35,7 @@ $(function() {
     if (offset == undefined) {
       offset = newOffset
     } else {
-      offset = (offset + newOffset)/(2);
+      offset = (offset *.75 + newOffset * .25);
     }
     numberSyncs++;
     console.log('offset: ' + offset);
