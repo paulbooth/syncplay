@@ -76,6 +76,23 @@ $(function() {
     $('#info2').text('offset: ' + offset + ' roundtrip: ' + roundtrip);
     $('#info3').text('time to play: ' + (d-i));
   });
+  socket.on('playnow', function(timeData) {
+    // console.log('received play message');
+    // setTimeout(function() { 
+    //   songAudio.play(); 
+    //   startFlash();
+    // },
+    //   (playTime + offset));
+    console.log('play');
+    console.log(timeData);
+    var i = Date.now();
+    songAudio.currentTime = timeData.playTime;
+    songAudio.play();
+    var d = Date.now(); 
+    $('#info1').text('calc\'d offset: ' + (timeData.serverTime - i));
+    $('#info2').text('offset: ' + offset + ' roundtrip: ' + roundtrip);
+    $('#info3').text('time to play: ' + (d-i));
+  });
 
   // socket.on('message', function(data) {
   //   // not used.
@@ -97,6 +114,10 @@ $(function() {
   $('#play').click(function() {
     console.log('sending play message');
 	  socket.emit('start');
+  });
+  $('#playnofancy').click(function() {
+    console.log('sending playnofancy message');
+    socket.emit('startnow');
   });
   $('#stop').click(function() {
 	  console.log('sending stop message');

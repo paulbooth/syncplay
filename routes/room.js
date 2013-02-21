@@ -24,6 +24,9 @@ function connection_function(socket) {
   function playAll() {
     io.of(socket.namespace.name).emit('play', {playTime: Math.random() * 230, serverTime: Date.now()});
   }
+  function playAllNow() {
+    io.of(socket.namespace.name).emit('playnow', {playTime: Math.random() * 230, serverTime: Date.now()});
+  }
 
   socket.on('startClockSync', function(data) {
     console.log('syncing clock');
@@ -33,6 +36,10 @@ function connection_function(socket) {
   socket.on('start', function() {
     console.log('playing music');
     setTimeout(playAll, 1000);
+  });
+  socket.on('startnow', function() {
+    console.log('playing music');
+    setTimeout(playAllNow, 1000);
   });
 
   socket.on('message', function(data) {
