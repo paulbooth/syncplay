@@ -61,7 +61,7 @@ $(function() {
     //   startFlash();
     // },
     //   (playTime + offset));
-    songAudio.currentTime = 15 + offset;
+    songAudio.currentTime = 15 ;
     songAudio.play();
   });
 
