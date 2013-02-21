@@ -61,8 +61,11 @@ $(function() {
     //   startFlash();
     // },
     //   (playTime + offset));
-    songAudio.currentTime = 15 ;
+    var i = Date.now();
+    songAudio.currentTime = playTime ;
     songAudio.play();
+    var d = Date.now(); 
+    $('#info2').text(d-i);
   });
 
   // socket.on('message', function(data) {
