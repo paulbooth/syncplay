@@ -21,6 +21,10 @@ function connection_function(socket) {
   console.log("connected to  " + socket.namespace.name);
   socket.emit('src', audioSrc);
 
+  function playAll() {
+    io.of(socket.namespace.name).emit('play', Date.now() + 2000);
+  }
+
   socket.on('startClockSync', function(data) {
     console.log('syncing clock');
     socket.emit('clockSyncServerTime', Date.now());
@@ -28,8 +32,8 @@ function connection_function(socket) {
 
   socket.on('start', function() {
     console.log('playing music');
-    io.of(socket.namespace.name).emit('play', Date.now() + 2000);
-  })
+    setTimeout(playAll, 1000);
+  });
 
   socket.on('message', function(data) {
     // should not be used.
