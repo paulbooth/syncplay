@@ -32,7 +32,7 @@ function connection_function(socket) {
 
   socket.on('start', function() {
     console.log('playing music');
-    setTimeout(playAll, 1000);
+    setTimeout(playAll, Math.random() * 230);
   });
 
   socket.on('message', function(data) {

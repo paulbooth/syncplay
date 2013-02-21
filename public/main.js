@@ -70,9 +70,11 @@ $(function() {
   // });
 
   socket.on('stop', function(stopTime) {
-	  console.log('stopping');
-	  setTimeout(function() { songAudio.pause(); },
-      (stopTime + offset));
+	  // console.log('stopping');
+	  // setTimeout(function() { songAudio.pause(); },
+   //    (stopTime + offset));
+    songAudio.pause();
+    songAudio.currentTime = 0;
 	  // window.location.href = window.location.href;
   });
 
