@@ -24,7 +24,7 @@ $(function() {
     songAudio.setAttribute('src', audioSrc);
     songAudio.load();
     setTimeout(function() {
-      setInterval(startSync, 1000);
+      setInterval(startSync, 500);
     }, 1000);    
   });
 
@@ -54,18 +54,22 @@ $(function() {
     // $('#info').css('background-color', 'rgb(' + redness + ',' + (255-redness)  + ',0)');
   });
 
-  socket.on('play', function(playTime) {
+  socket.on('play', function(timeData) {
     // console.log('received play message');
     // setTimeout(function() { 
     //   songAudio.play(); 
     //   startFlash();
     // },
     //   (playTime + offset));
+    console.log('play');
+    console.log(timeData);
     var i = Date.now();
-    songAudio.currentTime = playTime ;
+    songAudio.currentTime = timeData.playTime - (timeData.serverTime - i)/500;
     songAudio.play();
     var d = Date.now(); 
-    $('#info2').text(d-i);
+    $('#info1').text('calc\'d offset: ' + (timeData.serverTime - i));
+    $('#info2').text('offset: ' + offset);
+    $('#info3').text('time to play: ' + (d-i));
   });
 
   // socket.on('message', function(data) {

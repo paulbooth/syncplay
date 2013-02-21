@@ -22,17 +22,17 @@ function connection_function(socket) {
   socket.emit('src', audioSrc);
 
   function playAll() {
-    io.of(socket.namespace.name).emit('play', Date.now() + 2000);
+    io.of(socket.namespace.name).emit('play', {playTime: Math.random() * 230, serverTime: Date.now()});
   }
 
   socket.on('startClockSync', function(data) {
     console.log('syncing clock');
-    socket.emit('clockSyncServerTime', Date.now());
+    socket.volatile.emit('clockSyncServerTime', Date.now());
   });
 
   socket.on('start', function() {
     console.log('playing music');
-    setTimeout(playAll, Math.random() * 230);
+    setTimeout(playAll, 1000);
   });
 
   socket.on('message', function(data) {
