@@ -44,6 +44,11 @@ server.listen(app.get('port'), function(){
   console.log("Express server listening.");
 });
 
+app.get('/video', function(req, res) {
+  res.render('video');
+})
+
 app.get('/:roomid', room.room);
 
 app.get('/', room.index);
+
