@@ -19,7 +19,6 @@ app.configure(function(){
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
-  app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   // app.use(express.cookieParser(process.env.SECRET || 'fake_secret'));
@@ -37,6 +36,7 @@ app.configure('development', function(){
     console.error("couldn't get IP. oh well.");
     console.log(e);
   }
+  app.use(express.logger('dev'));
   app.use(express.errorHandler());
 });
   
