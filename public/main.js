@@ -93,6 +93,25 @@ $(function() {
     $('#info2').text('offset: ' + offset + ' roundtrip: ' + roundtrip);
     $('#info3').text('time to play: ' + (d-i));
   });
+  socket.on('playtimeout', function(timeData) {
+    // console.log('received play message');
+    // setTimeout(function() { 
+    //   songAudio.play(); 
+    //   startFlash();
+    // },
+    //   (playTime + offset));
+    console.log('play timeout');
+    console.log(timeData);
+    var i = Date.now();
+    songAudio.currentTime = timeData.playTime;
+    setTimeout(function() {
+      songAudio.play();
+    }, 2000 - roundtrip);
+    var d = Date.now(); 
+    $('#info1').text('calc\'d offset: ' + (timeData.serverTime - i));
+    $('#info2').text('offset: ' + offset + ' roundtrip: ' + roundtrip);
+    $('#info3').text('time to play: ' + (d-i));
+  });
 
   // socket.on('message', function(data) {
   //   // not used.
@@ -118,6 +137,10 @@ $(function() {
   $('#playnofancy').click(function() {
     console.log('sending playnofancy message');
     socket.emit('startnow');
+  });
+  $('#playtimeout').click(function() {
+    console.log('sending playnofancy message');
+    socket.emit('starttimeoutplay');
   });
   $('#stop').click(function() {
 	  console.log('sending stop message');
