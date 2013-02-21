@@ -1,4 +1,4 @@
-var songAudio, socket, startTime, offset, numberSyncs = 0, maxNumberSyncs = 20, offsets = [];
+var songAudio, socket, startTime, offset, numberSyncs = 0, maxNumberSyncs = 20, offsets = [], roundtrips = [], roundtrip;
 $(function() {
   console.log('starting init...');
 
@@ -36,8 +36,10 @@ $(function() {
     }
     var newOffset = clockSyncServerTime - receiveTime;
     offsets.push(newOffset);
+    roundtrips.push(receiveTime - startTime);
     if (offsets.length > maxNumberSyncs) {
       offsets.shift();
+      roundtrips.shift();
     }
     // var oldOffset = offset;
     // if (offset == undefined) {
@@ -49,6 +51,9 @@ $(function() {
     offset = offsets.reduce(function(a, b) { return a + b }) / offsets.length;
     // console.log('offset: ' + offset);
     $('#info').text( 'offset: ' + offset + ' offsets:' + offsets);
+    roundtrip = roundtrips.reduce(function(a, b) { return a + b }) / roundtrips.length;
+    // console.log('offset: ' + offset);
+    $('#info0').text( 'roundtrip: ' + roundtrip + ' roundtrips:' + roundtrips);
     // var max_badness = 3;
     // var redness = Math.floor(Math.min(Math.abs(offset - oldOffset), max_badness)/max_badness * 255);
     // $('#info').css('background-color', 'rgb(' + redness + ',' + (255-redness)  + ',0)');
@@ -64,11 +69,11 @@ $(function() {
     console.log('play');
     console.log(timeData);
     var i = Date.now();
-    songAudio.currentTime = timeData.playTime - (timeData.serverTime - i)/500;
+    songAudio.currentTime = timeData.playTime + roundtrip/1000;
     songAudio.play();
     var d = Date.now(); 
     $('#info1').text('calc\'d offset: ' + (timeData.serverTime - i));
-    $('#info2').text('offset: ' + offset);
+    $('#info2').text('offset: ' + offset + ' roundtrip: ' + roundtrip);
     $('#info3').text('time to play: ' + (d-i));
   });
 
