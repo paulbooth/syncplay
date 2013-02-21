@@ -42,12 +42,15 @@ $(function() {
     $('#info').text( 'offset: ' + offset + ' old: ' + (newOffset - oldOffset) + ' cumulative: ' + (offset - oldOffset));
     var max_badness = 3;
     var redness = Math.floor(Math.min(Math.abs(offset - oldOffset), max_badness)/max_badness * 255);
-    $('body').css('background-color', 'rgb(' + redness + ',' + (255-redness)  + ',0)');
+    $('#info').css('background-color', 'rgb(' + redness + ',' + (255-redness)  + ',0)');
   });
 
   socket.on('play', function(playTime) {
     console.log('received play message');
-    setTimeout(function() { songAudio.play(); },
+    setTimeout(function() { 
+      songAudio.play(); 
+      startFlash();
+    },
       (playTime + offset));
   });
 
@@ -74,5 +77,13 @@ $(function() {
 	  console.log('sending stop message');
 	  socket.emit('stopall');
   });
+
+  function startFlash() {
+    var black = false;
+    setInterval(function() {
+      $('body').css('background-color', black ? 'black' : 'white');
+      black = !black;
+    }, 500);
+  }
 
 });
