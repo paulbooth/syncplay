@@ -1,6 +1,6 @@
+var songAudio, socket, startTime, offset, numberSyncs = 0;
 $(function() {
   console.log('starting init...');
-  var songAudio, socket, startTime, offset, numberSyncs = 0;
 
   songAudio = new Audio();
   songAudio.addEventListener('canplaythrough', function() { 
@@ -49,12 +49,14 @@ $(function() {
   });
 
   socket.on('play', function(playTime) {
-    console.log('received play message');
-    setTimeout(function() { 
-      songAudio.play(); 
-      startFlash();
-    },
-      (playTime + offset));
+    // console.log('received play message');
+    // setTimeout(function() { 
+    //   songAudio.play(); 
+    //   startFlash();
+    // },
+    //   (playTime + offset));
+    songAudio.currentTime = 1 + offset;
+    songAudio.play();
   });
 
   // socket.on('message', function(data) {
