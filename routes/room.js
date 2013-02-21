@@ -27,7 +27,7 @@ function connection_function(socket) {
   function playAllNow() {
     io.of(socket.namespace.name).emit('playnow', {playTime: Math.random() * 230, serverTime: Date.now()});
   }
-  function playAllTimout() {
+  function playAllTimeout() {
     io.of(socket.namespace.name).emit('playtimeout', {playTime: Math.random() * 230, serverTime: Date.now()});
   }
 
