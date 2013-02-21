@@ -3,6 +3,9 @@ $(function() {
   var songAudio, socket, startTime, offset, numberSyncs = 0;
 
   songAudio = new Audio();
+  songAudio.addEventListener('canplaythrough', function() { 
+     $('#title').text("TEST READY.");
+  }, false);
 
   console.log('connecting to ' + window.location)
   socket = io.connect(window.location);//'http://' + window.location.hostname + ':8080');
