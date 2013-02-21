@@ -1,4 +1,4 @@
-var songAudio, socket, startTime, offset, numberSyncs = 0;
+var songAudio, socket, startTime, offset, numberSyncs = 0, maxNumberSyncs = 20, offsets = [];
 $(function() {
   console.log('starting init...');
 
@@ -29,23 +29,29 @@ $(function() {
   });
 
   socket.on('clockSyncServerTime', function(clockSyncServerTime) {
+    var receiveTime = Date.now();
     console.log('server clock sync received ' + clockSyncServerTime + '; setting offset');
     if (startTime == null) {
       throw "clock sync failed: startTime didn't get set.";
     }
-    var newOffset = clockSyncServerTime - Date.now()/2 - startTime/2;
-    var oldOffset = offset;
-    if (offset == undefined) {
-      offset = newOffset
-    } else {
-      offset = (offset *.75 + newOffset * .25);
+    var newOffset = clockSyncServerTime - receiveTime;
+    offsets.push(newOffset);
+    if (offsets.length > maxNumberSyncs) {
+      offsets.shift();
     }
-    numberSyncs++;
-    console.log('offset: ' + offset);
-    $('#info').text( 'offset: ' + offset + ' old: ' + (newOffset - oldOffset) + ' cumulative: ' + (offset - oldOffset));
-    var max_badness = 3;
-    var redness = Math.floor(Math.min(Math.abs(offset - oldOffset), max_badness)/max_badness * 255);
-    $('#info').css('background-color', 'rgb(' + redness + ',' + (255-redness)  + ',0)');
+    // var oldOffset = offset;
+    // if (offset == undefined) {
+    //   offset = newOffset
+    // } else {
+    //   offset = (offset *.75 + newOffset * .25);
+    // }
+    // numberSyncs++;
+    offset = offsets.reduce(function(a, b) { return a + b }) / offsets.length;
+    // console.log('offset: ' + offset);
+    $('#info').text( 'offset: ' + offset + ' offsets:' + offsets);
+    // var max_badness = 3;
+    // var redness = Math.floor(Math.min(Math.abs(offset - oldOffset), max_badness)/max_badness * 255);
+    // $('#info').css('background-color', 'rgb(' + redness + ',' + (255-redness)  + ',0)');
   });
 
   socket.on('play', function(playTime) {
@@ -55,7 +61,7 @@ $(function() {
     //   startFlash();
     // },
     //   (playTime + offset));
-    songAudio.currentTime = 1 + offset;
+    songAudio.currentTime = 15 + offset;
     songAudio.play();
   });
 
