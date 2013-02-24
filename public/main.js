@@ -6,6 +6,9 @@ $(function() {
   songAudio.addEventListener('canplaythrough', function() { 
      $('#title').text("TEST READY.");
   }, false);
+  songAudio.controls = "controls";
+  $('#audio').append(songAudio);
+
 
   console.log('connecting to ' + window.location)
   socket = io.connect(window.location);//'http://' + window.location.hostname + ':8080');

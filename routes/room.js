@@ -14,7 +14,9 @@ exports.index = function(req, res){
 var rooms = {};
 var io;
 
-var audioSrc = 'audio/boo.mp3';
+// var audioSrc = 'audio/boo.mp3';
+var audioSrc = 'http://songs.jonathancoulton.com/mp3/Code%20Monkey.mp3';
+
 
 // The function for a socket connecting to a room
 function connection_function(socket) {
